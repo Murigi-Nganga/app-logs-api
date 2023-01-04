@@ -1,0 +1,32 @@
+{
+  "name": "app-logs-api",
+  "version": "1.0.0",
+  "description": "A REST API written in ExpressJS to manage application logs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Murigi-Nganga/app-logs-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Murigi-Nganga/app-logs-api/issues"
+  },
+  "homepage": "https://github.com/Murigi-Nganga/app-logs-api#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^6.8.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
