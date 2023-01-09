@@ -1,15 +1,16 @@
 const express = require("express")
-const { getSingleLog, getLogs, createLog, updateLog, deleteLog } = require("../controllers/LogController")
+const { getSingleLog, getAllLogs, createLog, updateLog } = require("../controllers/LogController")
 const router = express.Router()
+const { protect } = require('../middleware/AuthMiddleware')
 
-router.get("/", getLogs)
+router.get("/", protect, getAllLogs)
 
 router.post("/", createLog)
 
-router.get("/:id", getSingleLog)
+router.get("/:id", protect, getSingleLog)
 
-router.put("/:id", updateLog)
+router.put("/:id", protect, updateLog)
 
-router.delete("/:id", deleteLog)
+// router.delete("/:id", protect, deleteLog)
 
-module.exports = { apiRouter: router }
+module.exports = { logsRouter: router }

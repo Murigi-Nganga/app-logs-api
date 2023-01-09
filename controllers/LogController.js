@@ -1,11 +1,16 @@
 const asyncHandler = require("express-async-handler")
 const LogModel = require("../models/LogModel")
-const logNotFoundMsg = {message: 'Log not found'}
+const { mongoose } = require("mongoose")
+const logNotFoundMsg = { message: 'Log not found. Invalid log ID' }
 
-// @desc Get Logs
+
+// @desc Get All 'unhandled' logs
 // @route GET /api/logs
-const getLogs = asyncHandler(async (req, res) => {
-  const logs = await LogModel.find()
+const getAllLogs = asyncHandler(async (req, res) => {
+  const logs = await LogModel.find({ 
+    status: 'New',
+    developer: null
+  })
 
   res.status(200).json({
     message: 'All logs retrieved successfully',
@@ -46,11 +51,18 @@ const createLog = asyncHandler(async (req, res) => {
       screen: req.body.screen,
       os: req.body.os
     })
-  
-    res.status(200).json({
+
+    if (log) {
+      res.status(200).json({
       message: 'Log created successfully',
       data : log
     })
+    } else {
+      res.status(500).json({
+        message: 'Log could not be created. Internal server error'
+      })
+    }
+    
   } catch (error) {
     res.status(400).json({
       message: error.message
@@ -66,8 +78,14 @@ const updateLog = asyncHandler(async (req, res) => {
     try {
       const updatedLog = await LogModel.findByIdAndUpdate(
         req.params.id,
-        req.body,
-        { new: true }
+        {
+          status: req.body.status,
+          developer: req.dev.id
+        },
+        { 
+          new: true,
+          runValidators: true
+        }
       )
 
       if(updatedLog) {
@@ -79,39 +97,43 @@ const updateLog = asyncHandler(async (req, res) => {
         res.status(404).json(logNotFoundMsg)
       }
 
-    } catch(_) {
-      res.status(404).json(logNotFoundMsg)
+    } catch(error) {
+        if (error instanceof mongoose.CastError) {
+          res.status(400).json({'message': logNotFoundMsg})
+        } else {
+           // error instanceof mongoose.ValidationError
+          res.status(400).json({'message': error.message})
+        }
     }
-    
 })
 
 // @desc Delete Log
 // @route DELETE /api/logs/:id
 // @access Private
-const deleteLog = asyncHandler(async (req, res) => {
+// const deleteLog = asyncHandler(async (req, res) => {
   
-  try {
-    const log = await LogModel.findById(req.params.id);
+//   try {
+//     const log = await LogModel.findById(req.params.id);
 
-    if (log) {
-      await LogModel.findByIdAndDelete(req.params.id)
-      res.status(200).json({
-        message: 'Log deleted successfully',
-        id: req.params.id
-      })
-    } else {
-      res.status(404).json(logNotFoundMsg)
-    }
-  } catch(_) {
-    res.status(404).json(logNotFoundMsg)
-  }
+//     if (log) {
+//       await LogModel.findByIdAndDelete(req.params.id)
+//       res.status(200).json({
+//         message: 'Log deleted successfully',
+//         id: req.params.id
+//       })
+//     } else {
+//       res.status(404).json(logNotFoundMsg)
+//     }
+//   } catch(_) {
+//     res.status(404).json(logNotFoundMsg)
+//   }
   
-})
+// })
 
 module.exports = {
-  getLogs: getLogs,
+  getAllLogs: getAllLogs,
   getSingleLog: getSingleLog,
   createLog: createLog,
   updateLog: updateLog,
-  deleteLog: deleteLog,
+  // deleteLog: deleteLog,
 }
