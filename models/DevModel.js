@@ -7,6 +7,25 @@ const devSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a name"],
     },
+    role: {
+      type: String,
+      required: [true, "Please add a role"],
+      enum: ["Junior", "Senior"],
+    },
+    stack: {
+      type: String,
+      required: [true, "Please add a stack"],
+      enum: [
+        "Frontend",
+        "Backend",
+        "Testing",
+        "Integrations",
+        "Documentation",
+        "Testing",
+        "Devops",
+        "UiUx",
+      ],
+    },
     email: {
       type: String,
       required: [true, "Please add an email"],

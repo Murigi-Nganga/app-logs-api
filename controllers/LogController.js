@@ -3,14 +3,13 @@ const LogModel = require("../models/LogModel")
 const { mongoose } = require("mongoose")
 const logNotFoundMsg = { message: 'Log not found. Invalid log ID' }
 
-
-// @desc Get All 'unhandled' logs
+// @desc Get All logs
 // @route GET /api/logs
 const getAllLogs = asyncHandler(async (req, res) => {
-  const logs = await LogModel.find({ 
-    status: 'New',
-    developer: null
-  })
+  const logs = await LogModel.find().populate(
+    "developer",
+    "name"
+  );
 
   res.status(200).json({
     message: 'All logs retrieved successfully',
@@ -44,13 +43,7 @@ const getSingleLog = asyncHandler(async (req, res) => {
 // @route POST /api/logs
 const createLog = asyncHandler(async (req, res) => {
   try {
-    const log = await LogModel.create({
-      typeOfLog: req.body.typeOfLog,
-      microservice: req.body.microservice,
-      message: req.body.message,
-      screen: req.body.screen,
-      os: req.body.os
-    })
+    const log = await LogModel.create(req.body)
 
     if (log) {
       res.status(200).json({
@@ -80,7 +73,8 @@ const updateLog = asyncHandler(async (req, res) => {
         req.params.id,
         {
           status: req.body.status,
-          developer: req.dev.id
+          developer: req.dev,
+          devNote: req.body.devNote
         },
         { 
           new: true,

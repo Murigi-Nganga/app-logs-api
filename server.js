@@ -8,6 +8,7 @@ const cors = require('cors')
 const { connectDB } = require('./config/db')
 const { logsRouter } = require('./routes/LogRoutes')
 const { devsRouter } = require('./routes/DevRoutes')
+const { statsRouter } = require('./routes/StatsRoutes')
 
 const port = process.env.PORT || 4000
 
@@ -21,6 +22,7 @@ app.use(bodyParser.json())
 
 app.use('/api/logs', logsRouter)
 app.use('/api/devs', devsRouter)
+app.use('/api/stats', statsRouter)
 
 app.use('*', (req, res)=> {  //For all other unspecified routes
   res.status(404).json({

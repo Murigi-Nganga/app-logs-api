@@ -1,0 +1,7 @@
+Modify the GET request that returns all developers to return the name of the developers as well
+Add a GET request to fetch the details for all developers
+Add 2 new fields to the Developer model - role and stack
+Add a devNote field to the Log Model
+Add an 'In Testing' option in the status enum's array
+Add GET requests for Log statistics by typeOfLog, status and microservice
+
